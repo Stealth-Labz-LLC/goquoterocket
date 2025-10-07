@@ -1,0 +1,37 @@
+
+##### start generic codes #####
+Options +FollowSymlinks -Indexes
+DirectoryIndex index.php index.html
+AddDefaultCharset utf-8
+
+<files .htaccess>
+    order allow,deny
+    deny from all
+</files>
+
+<FilesMatch ".(doc|pdf)$">
+    <ifModule mod_headers.c>
+        Header set X-Robots-Tag "noindex, nofollow, noarchive, nosnippet"
+    </ifModule>    
+</FilesMatch>
+
+<FilesMatch "robots.txt">
+    <ifModule mod_headers.c>
+        Header set X-Robots-Tag "noindex"
+    </ifModule>    
+</FilesMatch>
+
+<FilesMatch "sitemap.xml">
+    <ifModule mod_headers.c>
+        Header set X-Robots-Tag "noindex"
+    </ifModule>    
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+</IfModule>
+<ifModule mod_headers.c>
+    Header set Connection keep-alive
+</ifModule>
+
+##### end generated .htaccess code #####

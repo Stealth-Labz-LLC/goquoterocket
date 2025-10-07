@@ -1,0 +1,197 @@
+ .custom-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.dataTables_filter {
+    float: left;
+    /* Align search bar to the left */
+}
+
+.dataTables_length {
+    float: right;
+    /* Align dropdown to the right */
+}
+
+.custom-pagination {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.toggle {
+    position: relative;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle input {
+    display: none;
+}
+
+.toggle-container .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 34px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.toggle-container .slider::before {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    left: 4px;
+    bottom: 1px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: bold;
+    color: #666;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    top: 5px;
+}
+
+.toggle-container input:checked+.slider {
+    background-color: #007bff;
+}
+
+.toggle-container input:checked+.slider:before {
+    transform: translateX(26px);
+    content: "";
+    color: #007bff;
+    background-color: #fff;
+}
+
+
+
+.toggle-container .slider::after {
+    content: "OFF";
+    font-size: 10px;
+    color: #007bff;
+    right: 4px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.toggle-container input:checked+.slider:after {
+    color: #fff;
+    right: auto;
+    left: 4px;
+    content: "ON";
+}
+
+.dt-column-order {
+    display: none;
+}
+
+table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
+    padding: 9px 0px !important;
+}
+table.dataTable thead > tr > th.dt-orderable-asc, table.dataTable thead > tr > th.dt-orderable-desc, table.dataTable thead > tr > th.dt-ordering-asc, table.dataTable thead > tr > th.dt-ordering-desc, table.dataTable thead > tr > td.dt-orderable-asc, table.dataTable thead > tr > td.dt-orderable-desc, table.dataTable thead > tr > td.dt-ordering-asc, table.dataTable thead > tr > td.dt-ordering-desc {
+    padding-right: 0px !important;
+}
+ 
+
+@media (max-width: 500px) {
+    .toggle-container {
+        font-size: 14px;
+    }
+
+    .toggle {
+        width: 40px;
+        height: 20px;
+    }
+
+    .toggle-container .slider:before {
+        width: 10px;
+        height: 10px;
+        font-size: 9px;
+    }
+
+    .toggle-container input:checked+.slider:before {
+        transform: translateX(20px);
+    }
+}
+
+@media (max-width: 767px) {
+    .dt-container.dt-empty-footer>div.dt-layout-row {
+        display: flex !important;
+    }
+
+    .dt-container.dt-empty-footer>div.dt-layout-row>.dt-search {
+        width: 60%;
+    }
+
+    .dt-container.dt-empty-footer>div.dt-layout-row>.dt-length {
+        width: 30%;
+        text-align: right;
+    }
+
+    .dt-container.dt-empty-footer>div.dt-layout-row>.dt-search input {
+        min-width: 100% !important;
+        width: 100%;
+    }
+}
+
+table.dataTable>tbody>tr.response-row {
+    cursor: pointer;
+}
+table.dataTable>tbody>tr.response-row:nth-of-type(odd) > *{
+    background:#f6fbff !important;
+}
+
+
+table.dataTable>tbody>tr.response-row:hover td{
+    background: #e0f4fd !important;
+    --bs-table-bg-type:  #e0f4fd !important;
+}
+div.dt-container select.dt-input{
+    margin-right: 5px;
+}
+
+div.dt-container select.dt-input+label{
+    display: none;
+}
+div.dt-container .dt-search >label{
+    display: none;
+}
+
+table.dataTable > thead > tr > th:first-child, table.dataTable > thead > tr > td:first-child{
+    min-width: 150px;
+}
+table.dataTable > thead > tr > td:nth-child(6){
+    min-width: 150px;
+}
+
+/* Exclude Tests button style  */
+
+.exclude-btn{
+    display: inline-block;
+    border: 1px solid black;
+    border-radius: 6px;
+    color: #000;
+    font-size: 13px;
+    line-height: 18px;
+    padding: 5px 10px;
+    background: transparent;
+}
+

@@ -1,0 +1,15 @@
+[14-May-2025 12:50:01 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '12:50:01 and scheduletrackApi = '1' and isTrackApiFired = '0'' at line 1 in /home/quoterocket/public_html/cron/executeTrackApi.php:30
+Stack trace:
+#0 /home/quoterocket/public_html/cron/executeTrackApi.php(30): mysqli->query('SELECT id,phone...')
+#1 {main}
+  thrown in /home/quoterocket/public_html/cron/executeTrackApi.php on line 30
+[14-May-2025 12:55:02 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '12:55:02 and scheduletrackApi = '1' and isTrackApiFired = '0'' at line 1 in /home/quoterocket/public_html/cron/executeTrackApi.php:30
+Stack trace:
+#0 /home/quoterocket/public_html/cron/executeTrackApi.php(30): mysqli->query('SELECT id,phone...')
+#1 {main}
+  thrown in /home/quoterocket/public_html/cron/executeTrackApi.php on line 30
+[14-May-2025 13:00:01 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '13:00:01 and scheduletrackApi = '1' and isTrackApiFired = '0'' at line 1 in /home/quoterocket/public_html/cron/executeTrackApi.php:30
+Stack trace:
+#0 /home/quoterocket/public_html/cron/executeTrackApi.php(30): mysqli->query('SELECT id,phone...')
+#1 {main}
+  thrown in /home/quoterocket/public_html/cron/executeTrackApi.php on line 30

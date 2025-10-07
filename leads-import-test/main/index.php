@@ -1,0 +1,299 @@
+<?php
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+include_once '../credential.php';
+
+$BASE_URI = "/leads-import/main/";
+$endpoints = array();
+$requestData = array();
+
+
+
+//collect incoming parameters
+switch ($_SERVER['REQUEST_METHOD']) {
+    case 'POST':
+        $requestData = $_POST;
+        break;
+    case 'GET':
+        $requestData = $_GET;
+        break;
+    case 'DELETE':
+        $requestData = $_DELETE;
+        break;
+    case 'PUT':
+    case 'PATCH':
+        parse_str(file_get_contents('php://input'), $requestData);
+
+        //if the information received cannot be interpreted as an arrangement it is ignored.
+        if (!is_array($requestData)) {
+            $requestData = array();
+        }
+
+        break;
+    default:
+        //TODO: implement here any other type of request method that may arise.
+        break;
+}
+
+//If the token is sent in a header X-API-KEY
+if (isset($_SERVER["HTTP_X_API_KEY"])) {
+    $requestData["token"] = $_SERVER["HTTP_X_API_KEY"];
+}
+
+$parsedURI = parse_url($_SERVER["REQUEST_URI"]);
+$endpointName = str_replace($BASE_URI, "", $parsedURI["path"]);
+
+if (empty($endpointName)) {
+    $endpointName = "/";
+}
+
+// closures to define each endpoint logic
+/**
+ * prints a default message if the API base path is queried.
+ * @param array $requestData contains the parameters sent in the request, for this endpoint they are ignored.
+ * @return void
+ */
+$endpoints["/"] = function (array $requestData): void {
+
+    echo json_encode("Welcome to my API!-" . $requestData["name"]);
+};
+
+/**
+ * prints a greeting message with the name specified in the $requestData["name"] item.
+ * if the variable is empty a default name is used.
+ * @param array $requestData this array must contain an item with key "name" 
+ * if you want to display a custom name in the greeting.
+ * @return void
+ */
+$endpoints["addData"] = function (array $requestData): void {
+
+    if (!isset($requestData["name"])) {
+        $requestData["name"] = "Misterious masked individual";
+    }
+    //DB Connection Set up
+    $connectionData = [
+        'db_host' => DB_HOST,
+        'db_username' => DB_USERNAME,
+        'db_password' => DB_PASSWORD,
+        'db_name' => DB_NAME
+    ];
+    $conn = new mysqli(
+        $connectionData['db_host'],
+        $connectionData['db_username'],
+        $connectionData['db_password'],
+        $connectionData['db_name']
+    );
+    if ($conn->connect_error) {
+        echo 'Something went wrong try again!';
+        die();
+        //die("Connection failed: " . $conn->connect_error);
+    }
+    $sid = $requestData['sid'];
+    $aff_sub = $requestData['aff_sub'];
+    $aff_sub2 = $requestData['aff_sub2'];
+    $aff_sub3 = !empty($requestData['aff_sub3']) ? $requestData['aff_sub3'] : 'N/A';
+    $funnel_id = $requestData['funnel_id'];
+    $sid = $requestData['sid'];
+    $api_payload = $requestData['api_payload'];
+    $api_response = $requestData['api_response'];
+    $postback_payload = $requestData['postback_payload'];
+    $postback_response = $requestData['postback_response'];
+    $city = !empty($requestData['city']) ? $requestData['city'] : '';
+    $firstname = $requestData['firstname'];
+    $lastname = $requestData['lastname'];
+    $phone1 = $requestData['phone1'];
+    $optinurl = $requestData['optinurl'];
+    $optindate = $requestData['optindate'];
+    $ip_address = $_SERVER['REMOTE_ADDR'];
+    $offer_id = $requestData['offer_id'];
+    $preferredtimeofcall = $requestData['preferredtimeofcall'];
+
+    // Check if the record exists
+    $check_duplicate = "SELECT id FROM main_site WHERE phone1='$phone1'";
+    $result = $conn->query($check_duplicate);
+
+    if ($result->num_rows > 0) {
+        // Record exists, perform UPDATE
+        $query = "UPDATE main_site SET  api_payload='$api_payload',api_response='$api_response' WHERE phone1='$phone1'";
+        //file_put_contents('./insertleadlog_View' . time() . '.log', $query, FILE_APPEND);
+    } else {
+        // Record does not exist, perform INSERT
+        $query = "INSERT INTO main_site(funnel_id,sid,aff_sub,aff_sub2,aff_sub3,api_payload,api_response,postback_payload,postback_response,city,firstname,lastname,phone1,ip_address,optinurl,optindate,offer_id,preferredtimeofcall)
+    VALUES('$funnel_id','$sid','$aff_sub','$aff_sub2','$aff_sub3','$api_payload','$api_response','$postback_payload','$postback_response','$city','$firstname','$lastname','$phone1','$ip_address','$optinurl','$optindate','$offer_id','$preferredtimeofcall')";
+        //echo $insertQuery;
+        //file_put_contents('./insertleadlog_View' . time() . '.log', $query, FILE_APPEND);
+    }
+    if ($conn->query($query) === TRUE) {
+        $LeadResponse = array(
+            "status" => "SUCCESS",
+            "Code" => 1,
+            "status_message" => 'Leads Imported',
+        );
+        echo json_encode($LeadResponse);
+        die();
+    } else {
+        $LeadResponse = array(
+            "status" => "ERROR",
+            "Code" => 2,
+            "status_message" => 'Failed Leads Import!',
+        );
+        echo json_encode($LeadResponse);
+        die();
+    }
+};
+$endpoints["updateData"] = function (array $requestData): void {
+
+    if (!isset($requestData["phone1"])) {
+        $requestData["phone"] = "Misterious masked individual";
+    }
+    //DB Connection Set up
+    $connectionData = [
+        'db_host' => DB_HOST,
+        'db_username' => DB_USERNAME,
+        'db_password' => DB_PASSWORD,
+        'db_name' => DB_NAME
+    ];
+    $conn = new mysqli(
+        $connectionData['db_host'],
+        $connectionData['db_username'],
+        $connectionData['db_password'],
+        $connectionData['db_name']
+    );
+    if ($conn->connect_error) {
+        echo 'Something went wrong try again!';
+        die();
+        //die("Connection failed: " . $conn->connect_error);
+    }
+    $phone1 = $requestData['phone1'];
+    $track_payload = $requestData['track_payload'];
+    $track_response = $requestData['track_response'];
+
+    $warranty_payload = $requestData['warranty_payload'];
+    $warranty_response = $requestData['warranty_response'];
+
+    $dripcell_payload = $requestData['dripcell_payload'];
+    $dripcell_response = $requestData['dripcell_response'];
+
+    $triggerTrackapi = !empty($requestData['triggerTrackapi']) ? $requestData['triggerTrackapi'] : '0';
+    $triggerWarrantyapi = !empty($requestData['triggerWarrantyapi']) ? $requestData['triggerWarrantyapi'] : '0';
+    $dripcellContactUpload = !empty($requestData['dripcellContactUpload']) ? $requestData['dripcellContactUpload'] : '0';
+    $track_preferredtimeofcall = !empty($requestData['track_preferredtimeofcall']) ? $requestData['track_preferredtimeofcall'] : '0';
+    $warranty_preferredtimeofcall = !empty($requestData['warranty_preferredtimeofcall']) ? $requestData['warranty_preferredtimeofcall'] : '0';
+
+    if ($triggerTrackapi == 1) {
+        $updateLeadData = "UPDATE main_site SET track_payload='$track_payload',track_response= '$track_response',triggerTrackapi='$triggerTrackapi',track_preferredtimeofcall='$track_preferredtimeofcall' WHERE phone1='$phone1'";
+        //file_put_contents('./updateleadlog_View' . time() . '.log',$updateLeadData, FILE_APPEND);
+        if ($conn->query($updateLeadData) === TRUE) {
+            $LeadResponse = array(
+                "status" => "SUCCESS",
+                "Code" => 1,
+                "status_message" => 'Leads Updated',
+            );
+            echo json_encode($LeadResponse);
+            die();
+        } else {
+            $LeadResponse = array(
+                "status" => "ERROR",
+                "Code" => 2,
+                "status_message" => 'Failed Leads Update!',
+            );
+            echo json_encode($LeadResponse);
+            die();
+        }
+    }
+    if ($triggerWarrantyapi == 1) {
+        $updateLeadData = "UPDATE main_site SET warranty_payload='$warranty_payload',warranty_response='$warranty_response',triggerWarrantyapi='$triggerWarrantyapi',warranty_preferredtimeofcall='$warranty_preferredtimeofcall' WHERE phone1='$phone1'";
+        //file_put_contents('./updateleadlog_View' . time() . '.log',$updateLeadData, FILE_APPEND);
+        if ($conn->query($updateLeadData) === TRUE) {
+            $LeadResponse = array(
+                "status" => "SUCCESS",
+                "Code" => 1,
+                "status_message" => 'Leads Updated',
+            );
+            echo json_encode($LeadResponse);
+            die();
+        } else {
+            $LeadResponse = array(
+                "status" => "ERROR",
+                "Code" => 2,
+                "status_message" => 'Failed Leads Update!',
+            );
+            echo json_encode($LeadResponse);
+            die();
+        }
+    }
+
+    if ($dripcellContactUpload) {
+        $updateLeadData = "UPDATE main_site SET dripcell_payload='$dripcell_payload',dripcell_response='$dripcell_response',dripcellContactUpload='$dripcellContactUpload' WHERE phone1='$phone1'";
+        //]]==file_put_contents('./dripcellupdateleadlog_View' . time() . '.log', $updateLeadData, FILE_APPEND);
+        if ($conn->query($updateLeadData) === TRUE) {
+            $LeadResponse = array(
+                "status" => "SUCCESS",
+                "Code" => 1,
+                "status_message" => 'Leads Updated',
+            );
+            echo json_encode($LeadResponse);
+            die();
+        } else {
+            $LeadResponse = array(
+                "status" => "ERROR",
+                "Code" => 2,
+                "status_message" => 'Failed Leads Update!',
+            );
+            echo json_encode($LeadResponse);
+            die();
+        }
+    }
+};
+/**
+ * prints a default message if the endpoint path does not exist.
+ * @param array $requestData contains the parameters sent in the request, 
+ *                           for this endpoint they are ignored.
+ * @return void
+ */
+$endpoints["404"] = function ($requestData): void {
+
+    echo json_encode("Endpoint " . $requestData["endpointName"] . " not found.");
+};
+
+/**
+ * checks if the token is valid, and prevents the execution of 
+ * the requested endpoint.
+ * @param array $requestData contains the parameters sent in the request, 
+ *                           for this endpoint is required an item with 
+ *                           key "token" that contains the token
+ *                           received to authenticate and authorize 
+ *                           the request.
+ * @return void
+ */
+
+$endpoints["checktoken"] = function ($requestData): void {
+    $AccessToken = AUTH_TOKEN;
+    $tokens = array(
+        $AccessToken => ""
+    );
+
+    //echo '<pre>'; print_r($tokens);die();
+    if (!isset($requestData["token"])) {
+        echo json_encode("No token was received to authorize the operation. Verify the information sent");
+        exit;
+    }
+
+    if (!isset($tokens[$requestData["token"]])) {
+        echo json_encode("The token  " . $requestData["token"] .
+            " does not exists or is not authorized to perform this operation.");
+
+        exit;
+    }
+};
+
+//we define the response encoding, by default we will use json
+header("Content-Type: application/json; charset=UTF-8");
+
+if (isset($endpoints[$endpointName])) {
+    $endpoints["checktoken"]($requestData);
+    $endpoints[$endpointName]($requestData);
+} else {
+    $endpoints["404"](array("endpointName" => $endpointName));
+}
