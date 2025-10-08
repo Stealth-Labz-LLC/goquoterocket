@@ -113,8 +113,7 @@ jobs:
           echo "Uploading to: ${TARGET}${REMOTE_DIR}"
 
           lftp -u "$FTP_USER","$FTP_PASS" \
-            -e "set ssl:verify-certificate yes; \
-                set ssl:ca-file /etc/ssl/certs/ca-certificates.crt; \
+            -e "set ssl:verify-certificate no; \
                 set sftp:connect-program 'ssh -a -x -o UserKnownHostsFile=~/.ssh/known_hosts -o StrictHostKeyChecking=yes'; \
                 lcd ${LOCAL_SRC}; \
                 cd ${REMOTE_DIR}; \
